@@ -89,41 +89,37 @@ body{font-family:'Segoe UI',Inter,sans-serif;background:#F8F9FC;color:#1E1E2E;mi
 const REPORT = {
   name: "Gabriel Ferrarese",
   role: "SDET · Admin Portal & RaaS",
-  targets: { ap: 95, raas: 90 },
 
   weeks: [
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
+    // metrics: prsReviewed, prsCreated, testsConverted, adoUpdated
     {
       week: "Wk 31",
       date: "Jul 28",
-      headline: "LOB migration plan approved & pipeline hits target",
-      ap: 96,
-      raas: 94,
+      headline: "LOB migration plan presented & API authentication PR created",
+      metrics: { prsReviewed: 3, prsCreated: 1, testsConverted: 0, adoUpdated: 0, apiTestsFixed: 5 },
       items: [
-        { text: "LOB test migration plan approved — 4 phases, 8–13 hrs, full success criteria", status: "done" },
-        { text: "PR #178 reviewed — caught flaky test before merge, ran full 25-min spec", status: "done" },
-        { text: "RaaS bug identified before mini-demo — flagged and coordinated with team", status: "done" },
-        { text: "API test coverage (LOB Phase 1) — blocked pending API access from dev team", status: "blocked" },
-        { text: "Excel import validation — formula coverage and edge case testing in progress", status: "progress" },
+        { text: "Created PR: fix/api-authentication-lob-tests — unblocks API test execution for LOB", status: "done" },
+        { text: "Approved PR #191: chore(api-tests) — unskip and update expected status for invalid invitations", status: "done" },
+        { text: "Approved PR #186: chore(tenant-provisioning) — enhance mocked tenant name generation", status: "done" },
+        { text: "Presented LOB migration plan — migrate broken UI tests to API tests while AIPEs rebuilds Admin Portal UI", status: "done" },
+        { text: "Map automated vs manual test cases (API vs manual) in ADO — in progress", status: "progress" },
+        { text: "Update source test cases in ADO for converted/created tests — in progress", status: "progress" },
+        { text: "Complete LOB migration plan execution — in progress", status: "progress" },
       ],
-      blockers: [
-        "API access to LOB endpoints still private. Needs dev team confirmation to unblock Phase 1.",
-      ],
+      blockers: [],
       nextWeek: [
-        "Confirm API access with dev team → unblock LOB Phase 1",
-        "Uncomment + validate all 4 LOB API tests",
-        "Archive 8 UI tests with deprecation notice (Phase 2)",
-        "Continue Excel / Rating Plan import validation",
+        "Finish mapping automated vs manual test cases in ADO",
+        "Update ADO source test cases for all converted/created tests",
+        "Continue LOB migration plan execution",
       ],
     },
     // ── ADD MORE WEEKS ABOVE THIS LINE ───────────────────────
-    // Example past week (copy & fill):
     {
       week: "Wk 30",
       date: "Jul 21",
-      headline: "Flaky tests identified — pipeline recovering",
-      ap: 92,
-      raas: 91,
+      headline: "Flaky tests identified — LOB migration proposal drafted",
+      metrics: { prsReviewed: 1, prsCreated: 0, testsConverted: 0, adoUpdated: 3, apiTestsFixed: 0 },
       items: [
         { text: "Regression cycle completed with Randy and Manuel", status: "done" },
         { text: "Flaky tests identified across 3 specs — documented in ADO", status: "done" },
@@ -139,12 +135,11 @@ const REPORT = {
       week: "Wk 29",
       date: "Jul 14",
       headline: "Full regression cycle — baseline established",
-      ap: 88,
-      raas: 89,
+      metrics: { prsReviewed: 0, prsCreated: 0, testsConverted: 0, adoUpdated: 2, apiTestsFixed: 0 },
       items: [
         { text: "Participated in regression cycle alongside Randy and Manuel", status: "done" },
         { text: "Documented defect validation workflow for Admin Portal QA", status: "done" },
-        { text: "Pass rate below target — root cause: 3 flaky UI tests", status: "blocked" },
+        { text: "3 flaky UI tests identified — root cause of instability", status: "blocked" },
       ],
       blockers: [
         "3 flaky UI tests inflating fail count — flagged for investigation next week.",
@@ -197,32 +192,35 @@ document.getElementById("rpt-latest").textContent = weeks[0].date + " · " + wee
 
 // ── Summary metrics ─────────────────────────────────────────
 function buildSummary() {
-  const dataWeeks = weeks.filter(w => !w.upcoming);
-  const avgAP = Math.round(dataWeeks.reduce((s,w) => s + w.ap, 0) / dataWeeks.length);
-  const avgRaaS = Math.round(dataWeeks.reduce((s,w) => s + w.raas, 0) / dataWeeks.length);
-  const trend = dataWeeks.length >= 2 ? dataWeeks[0].ap - dataWeeks[1].ap : 0;
-  const totalBlockers = dataWeeks.reduce((s,w) => s + (w.blockers||[]).length, 0);
+  const dw = weeks.filter(w => !w.upcoming);
+  const cur = dw[0].metrics;
+  const totalPRs = dw.reduce((s,w) => s + (w.metrics.prsReviewed||0) + (w.metrics.prsCreated||0), 0);
+  const totalConverted = dw.reduce((s,w) => s + (w.metrics.testsConverted||0), 0);
+  const totalADO = dw.reduce((s,w) => s + (w.metrics.adoUpdated||0), 0);
   const openBlockers = (weeks[0].blockers||[]).length;
 
-  const apColor = avgAP >= targets.ap ? "#059669" : "#DC2626";
-  const trendColor = trend >= 0 ? "#059669" : "#DC2626";
-  const trendSign = trend > 0 ? "+" : "";
+  const totalAPIFixed = dw.reduce((s,w) => s + (w.metrics.apiTestsFixed||0), 0);
 
   document.getElementById("summary-row").innerHTML = `
     <div class="summary-card">
-      <div class="sc-label">Avg AP pass rate</div>
-      <div class="sc-val" style="color:${apColor}">${avgAP}%</div>
-      <div class="sc-sub">last ${dataWeeks.length} weeks · target ${targets.ap}%</div>
+      <div class="sc-label">PRs this week</div>
+      <div class="sc-val" style="color:#4F46E5">${(cur.prsReviewed||0) + (cur.prsCreated||0)}</div>
+      <div class="sc-sub">${cur.prsReviewed||0} reviewed · ${cur.prsCreated||0} created</div>
     </div>
     <div class="summary-card">
-      <div class="sc-label">AP trend</div>
-      <div class="sc-val" style="color:${trendColor}">${trendSign}${trend}pp</div>
-      <div class="sc-sub">vs previous week</div>
+      <div class="sc-label">API tests fixed</div>
+      <div class="sc-val" style="color:#0891B2">${cur.apiTestsFixed||0}</div>
+      <div class="sc-sub">${totalAPIFixed} total uncommented/fixed</div>
     </div>
     <div class="summary-card">
-      <div class="sc-label">Weeks tracked</div>
-      <div class="sc-val" style="color:#1E1E2E">${dataWeeks.length}</div>
-      <div class="sc-sub">since reporting started</div>
+      <div class="sc-label">Tests converted</div>
+      <div class="sc-val" style="color:#059669">${cur.testsConverted||0}</div>
+      <div class="sc-sub">${totalConverted} total UI→API</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">ADO cases updated</div>
+      <div class="sc-val" style="color:#7C3AED">${cur.adoUpdated||0}</div>
+      <div class="sc-sub">${totalADO} total this month</div>
     </div>
     <div class="summary-card">
       <div class="sc-label">Open blockers</div>
@@ -236,56 +234,54 @@ function buildTimeline() {
   const tl = document.getElementById("timeline");
   tl.innerHTML = "";
   weeks.forEach((w, i) => {
-    const prev = weeks[i + 1];
-    const delta = prev && !w.upcoming ? w.ap - prev.ap : null;
-    const apOk = !w.upcoming && w.ap >= targets.ap;
-    const apColor = w.upcoming ? "#9CA3AF" : apOk ? "#059669" : w.ap >= 90 ? "#D97706" : "#DC2626";
-    const deltaStr = delta !== null ? (delta >= 0 ? `↑ +${delta}` : `↓ ${delta}`) : i === weeks.length - 1 ? "baseline" : "—";
+    const m = w.metrics || {};
+    const total = (m.prsReviewed||0) + (m.prsCreated||0);
+    const prev = weeks[i+1];
+    const prevTotal = prev ? ((prev.metrics.prsReviewed||0) + (prev.metrics.prsCreated||0)) : null;
+    const delta = prevTotal !== null && !w.upcoming ? total - prevTotal : null;
+    const deltaStr = delta !== null ? (delta >= 0 ? `↑ +${delta}` : `↓ ${delta}`) : i === weeks.length-1 ? "baseline" : "—";
     const deltaColor = delta === null ? "#9CA3AF" : delta >= 0 ? "#059669" : "#DC2626";
+    const totalColor = w.upcoming ? "#9CA3AF" : total >= 3 ? "#059669" : total >= 1 ? "#D97706" : "#6B7280";
 
     const card = document.createElement("div");
     card.className = "wk-card" + (i === activeIdx ? " active" : "") + (w.upcoming ? " upcoming" : "");
     card.innerHTML = `
       <div class="wc-week">${w.week}</div>
       <div class="wc-date">${w.date}</div>
-      <div class="wc-rate" style="color:${apColor}">${w.upcoming ? "—" : w.ap + "%"}</div>
+      <div class="wc-rate" style="color:${totalColor}">${w.upcoming ? "—" : total}</div>
       <div class="wc-delta" style="color:${deltaColor}">${deltaStr}</div>
-      <div class="wc-suite">AP pass rate</div>`;
+      <div class="wc-suite">PRs reviewed/created</div>`;
     if (!w.upcoming) card.onclick = () => { activeIdx = i; buildTimeline(); buildDetail(); };
     tl.appendChild(card);
   });
 }
 
 // ── Detail ───────────────────────────────────────────────────
-function barHTML(value, target, color) {
-  const pct = Math.min(value, 100);
-  const tPct = Math.min(target, 100);
-  const ok = value >= target;
-  return `
-    <div class="bar-track">
-      <div class="bar-fill" style="width:${pct}%;background:${ok ? color : '#F87171'}"></div>
-      <div class="bar-marker" style="left:${tPct}%"></div>
-    </div>`;
+function metricChipHTML(label, value, color, sub) {
+  return `<div class="rate-pill">
+    <div class="rp-label">${label}</div>
+    <div class="rp-val" style="color:${color};font-size:22px">${value}</div>
+    ${sub ? `<div style="font-size:11px;color:#9CA3AF;margin-top:2px">${sub}</div>` : ""}
+  </div>`;
 }
 
 function buildDetail() {
   const w = weeks[activeIdx];
+  const m = w.metrics || {};
   const dotColor = { done: "#059669", progress: "#D97706", blocked: "#DC2626" };
-  const apOk = w.ap >= targets.ap;
-  const raasOk = w.raas >= targets.raas;
 
-  const itemsHTML = (w.items || []).map(item => `
+  const itemsHTML = (w.items||[]).map(item => `
     <div class="d-item">
-      <div class="d-dot" style="background:${dotColor[item.status] || '#6B7280'}"></div>
+      <div class="d-dot" style="background:${dotColor[item.status]||'#6B7280'}"></div>
       <span>${item.text}</span>
     </div>`).join("");
 
-  const blockersHTML = (w.blockers || []).length > 0 ? `
+  const blockersHTML = (w.blockers||[]).length > 0 ? `
     <div class="detail-divider-sm"></div>
     <div class="blockers-label">⚠️ Blockers</div>
     ${w.blockers.map(b => `<div class="blocker-item"><span>•</span><span>${b}</span></div>`).join("")}` : "";
 
-  const nextHTML = (w.nextWeek || []).length > 0 ? `
+  const nextHTML = (w.nextWeek||[]).length > 0 ? `
     <div class="detail-divider-sm"></div>
     <div class="next-label">Next week</div>
     ${w.nextWeek.map(n => `<div class="next-item"><div class="next-box"></div><span>${n}</span></div>`).join("")}` : "";
@@ -297,16 +293,11 @@ function buildDetail() {
         <div class="detail-headline">${w.headline}</div>
       </div>
       <div class="detail-rates">
-        <div class="rate-pill">
-          <div class="rp-label">Admin Portal</div>
-          <div class="rp-val" style="color:${apOk ? '#059669' : '#DC2626'}">${w.ap}%<span class="rp-target">/ ${targets.ap}% target</span></div>
-          ${barHTML(w.ap, targets.ap, "#0891B2")}
-        </div>
-        <div class="rate-pill">
-          <div class="rp-label">RaaS</div>
-          <div class="rp-val" style="color:${raasOk ? '#059669' : '#DC2626'}">${w.raas}%<span class="rp-target">/ ${targets.raas}% target</span></div>
-          ${barHTML(w.raas, targets.raas, "#059669")}
-        </div>
+        ${metricChipHTML("PRs reviewed", m.prsReviewed||0, "#4F46E5", "code reviews")}
+        ${metricChipHTML("PRs created", m.prsCreated||0, "#0891B2", "opened")}
+        ${metricChipHTML("API tests fixed", m.apiTestsFixed||0, "#0891B2", "uncommented/fixed")}
+        ${metricChipHTML("Tests converted", m.testsConverted||0, "#059669", "UI→API")}
+        ${metricChipHTML("ADO cases updated", m.adoUpdated||0, "#7C3AED", "test cases")}
       </div>
     </div>
     <div class="detail-divider"></div>
