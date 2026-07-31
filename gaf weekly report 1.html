@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Weekly Report – Gabriel Ferrarese</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Inter,sans-serif;background:#F8F9FC;color:#1E1E2E;min-height:100vh;padding:32px 20px}
+.wrap{max-width:800px;margin:0 auto}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #E4E7F0;padding-bottom:20px;margin-bottom:24px;gap:16px}
+.header-name{font-size:22px;font-weight:700;color:#1E1E2E}
+.header-role{font-size:13px;color:#6B7280;margin-top:3px}
+.header-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B7280;margin-bottom:4px}
+.week-badge{background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:8px 14px;text-align:right;flex-shrink:0}
+.week-badge .label{font-size:11px;color:#6366F1;font-weight:600}
+.week-badge .value{font-size:13px;font-weight:700;color:#3730A3;margin-top:2px}
+
+/* Summary metrics */
+.summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.summary-card{background:#fff;border:1px solid #E4E7F0;border-radius:12px;padding:14px 16px}
+.summary-card .sc-label{font-size:11px;color:#6B7280;margin-bottom:4px}
+.summary-card .sc-val{font-size:24px;font-weight:700;line-height:1}
+.summary-card .sc-sub{font-size:11px;color:#9CA3AF;margin-top:4px}
+
+/* Timeline */
+.timeline-wrap{margin-bottom:20px}
+.timeline-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6B7280;margin-bottom:10px}
+.timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.wk-card{flex:0 0 120px;background:#fff;border:1px solid #E4E7F0;border-radius:12px;padding:12px 10px;cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s;user-select:none}
+.wk-card:hover{border-color:#A5B4FC}
+.wk-card.active{border:2px solid #6366F1;box-shadow:0 2px 12px #6366F118}
+.wk-card.upcoming{opacity:.45;border-style:dashed;cursor:default}
+.wk-card .wc-week{font-size:11px;color:#6B7280;margin-bottom:2px}
+.wk-card .wc-date{font-size:12px;font-weight:600;color:#1E1E2E;margin-bottom:8px}
+.wk-card .wc-rate{font-size:20px;font-weight:700;line-height:1}
+.wk-card .wc-delta{font-size:11px;margin-top:4px}
+.wk-card .wc-suite{font-size:10px;color:#9CA3AF;margin-top:2px}
+
+/* Detail panel */
+.detail{background:#fff;border:1px solid #E4E7F0;border-radius:12px;padding:20px}
+.detail-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
+.detail-week{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6B7280;margin-bottom:4px}
+.detail-headline{font-size:15px;font-weight:700;color:#1E1E2E}
+.detail-rates{display:flex;gap:10px;flex-wrap:wrap}
+.rate-pill{background:#F3F4F6;border-radius:8px;padding:8px 14px;min-width:130px}
+.rate-pill .rp-label{font-size:11px;color:#6B7280;margin-bottom:4px}
+.rate-pill .rp-val{font-size:18px;font-weight:700}
+.rate-pill .rp-target{font-size:11px;color:#9CA3AF;margin-left:4px;font-weight:400}
+.bar-track{background:#E5E7EB;border-radius:6px;height:6px;position:relative;margin-top:6px}
+.bar-fill{height:100%;border-radius:6px}
+.bar-marker{position:absolute;top:-3px;width:2px;height:12px;background:#9CA3AF;border-radius:1px;transform:translateX(-50%)}
+
+.detail-divider{height:1px;background:#F3F4F6;margin:16px 0}
+.detail-items-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6B7280;margin-bottom:10px}
+.detail-items{display:flex;flex-direction:column;gap:8px}
+.d-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#374151;line-height:1.5}
+.d-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+
+.detail-divider-sm{height:1px;background:#F3F4F6;margin:12px 0}
+.blockers-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#92400E;margin-bottom:8px}
+.blocker-item{display:flex;gap:8px;font-size:13px;color:#78350F;line-height:1.5;background:#FEF3C7;border-radius:8px;padding:8px 10px;margin-bottom:6px}
+
+.next-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6B7280;margin-bottom:8px}
+.next-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#374151;line-height:1.5;margin-bottom:6px}
+.next-box{width:14px;height:14px;border-radius:3px;border:2px solid #D1D5DB;flex-shrink:0;margin-top:2px}
+
+.footer{margin-top:20px;text-align:center;font-size:11px;color:#9CA3AF}
+
+@media(max-width:580px){
+  body{padding:20px 14px}
+  .header{flex-direction:column}
+  .detail-head{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================================================================
+  ✏️  UPDATE THIS EVERY FRIDAY
+  - Add a new object at the TOP of the WEEKS array
+  - Set upcoming:true for future weeks (no data yet)
+  - status: "done" | "progress" | "blocked"
+================================================================ -->
+<script>
+const REPORT = {
+  name: "Gabriel Ferrarese",
+  role: "SDET · Admin Portal & RaaS",
+  targets: { ap: 95, raas: 90 },
+
+  weeks: [
+    // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
+    {
+      week: "Wk 31",
+      date: "Jul 28",
+      headline: "LOB migration plan approved & pipeline hits target",
+      ap: 96,
+      raas: 94,
+      items: [
+        { text: "LOB test migration plan approved — 4 phases, 8–13 hrs, full success criteria", status: "done" },
+        { text: "PR #178 reviewed — caught flaky test before merge, ran full 25-min spec", status: "done" },
+        { text: "RaaS bug identified before mini-demo — flagged and coordinated with team", status: "done" },
+        { text: "API test coverage (LOB Phase 1) — blocked pending API access from dev team", status: "blocked" },
+        { text: "Excel import validation — formula coverage and edge case testing in progress", status: "progress" },
+      ],
+      blockers: [
+        "API access to LOB endpoints still private. Needs dev team confirmation to unblock Phase 1.",
+      ],
+      nextWeek: [
+        "Confirm API access with dev team → unblock LOB Phase 1",
+        "Uncomment + validate all 4 LOB API tests",
+        "Archive 8 UI tests with deprecation notice (Phase 2)",
+        "Continue Excel / Rating Plan import validation",
+      ],
+    },
+    // ── ADD MORE WEEKS ABOVE THIS LINE ───────────────────────
+    // Example past week (copy & fill):
+    {
+      week: "Wk 30",
+      date: "Jul 21",
+      headline: "Flaky tests identified — pipeline recovering",
+      ap: 92,
+      raas: 91,
+      items: [
+        { text: "Regression cycle completed with Randy and Manuel", status: "done" },
+        { text: "Flaky tests identified across 3 specs — documented in ADO", status: "done" },
+        { text: "LOB migration proposal drafted — pending Randy approval", status: "progress" },
+      ],
+      blockers: [],
+      nextWeek: [
+        "Get LOB migration plan approved",
+        "Begin Phase 1 API test validation",
+      ],
+    },
+    {
+      week: "Wk 29",
+      date: "Jul 14",
+      headline: "Full regression cycle — baseline established",
+      ap: 88,
+      raas: 89,
+      items: [
+        { text: "Participated in regression cycle alongside Randy and Manuel", status: "done" },
+        { text: "Documented defect validation workflow for Admin Portal QA", status: "done" },
+        { text: "Pass rate below target — root cause: 3 flaky UI tests", status: "blocked" },
+      ],
+      blockers: [
+        "3 flaky UI tests inflating fail count — flagged for investigation next week.",
+      ],
+      nextWeek: [
+        "Identify and isolate flaky tests",
+        "Begin LOB migration proposal",
+      ],
+    },
+  ],
+};
+</script>
+<!-- ================================================================ -->
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <div class="header-eyebrow">Weekly Performance Report</div>
+    <div class="header-name" id="rpt-name"></div>
+    <div class="header-role" id="rpt-role"></div>
+  </div>
+  <div class="week-badge">
+    <div class="label">LATEST WEEK</div>
+    <div class="value" id="rpt-latest"></div>
+  </div>
+</div>
+
+<!-- Summary metrics -->
+<div class="summary-row" id="summary-row"></div>
+
+<!-- Timeline -->
+<div class="timeline-wrap">
+  <div class="timeline-label">Week history — tap to view</div>
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<!-- Detail panel -->
+<div class="detail" id="detail"></div>
+
+<div class="footer">QA Team · Origami Risk</div>
+</div>
+
+<script>
+const { name, role, targets, weeks } = REPORT;
+let activeIdx = 0;
+
+document.getElementById("rpt-name").textContent = name;
+document.getElementById("rpt-role").textContent = role;
+document.getElementById("rpt-latest").textContent = weeks[0].date + " · " + weeks[0].week;
+
+// ── Summary metrics ─────────────────────────────────────────
+function buildSummary() {
+  const dataWeeks = weeks.filter(w => !w.upcoming);
+  const avgAP = Math.round(dataWeeks.reduce((s,w) => s + w.ap, 0) / dataWeeks.length);
+  const avgRaaS = Math.round(dataWeeks.reduce((s,w) => s + w.raas, 0) / dataWeeks.length);
+  const trend = dataWeeks.length >= 2 ? dataWeeks[0].ap - dataWeeks[1].ap : 0;
+  const totalBlockers = dataWeeks.reduce((s,w) => s + (w.blockers||[]).length, 0);
+  const openBlockers = (weeks[0].blockers||[]).length;
+
+  const apColor = avgAP >= targets.ap ? "#059669" : "#DC2626";
+  const trendColor = trend >= 0 ? "#059669" : "#DC2626";
+  const trendSign = trend > 0 ? "+" : "";
+
+  document.getElementById("summary-row").innerHTML = `
+    <div class="summary-card">
+      <div class="sc-label">Avg AP pass rate</div>
+      <div class="sc-val" style="color:${apColor}">${avgAP}%</div>
+      <div class="sc-sub">last ${dataWeeks.length} weeks · target ${targets.ap}%</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">AP trend</div>
+      <div class="sc-val" style="color:${trendColor}">${trendSign}${trend}pp</div>
+      <div class="sc-sub">vs previous week</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Weeks tracked</div>
+      <div class="sc-val" style="color:#1E1E2E">${dataWeeks.length}</div>
+      <div class="sc-sub">since reporting started</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Open blockers</div>
+      <div class="sc-val" style="color:${openBlockers > 0 ? '#D97706' : '#059669'}">${openBlockers}</div>
+      <div class="sc-sub">this week</div>
+    </div>`;
+}
+
+// ── Timeline ─────────────────────────────────────────────────
+function buildTimeline() {
+  const tl = document.getElementById("timeline");
+  tl.innerHTML = "";
+  weeks.forEach((w, i) => {
+    const prev = weeks[i + 1];
+    const delta = prev && !w.upcoming ? w.ap - prev.ap : null;
+    const apOk = !w.upcoming && w.ap >= targets.ap;
+    const apColor = w.upcoming ? "#9CA3AF" : apOk ? "#059669" : w.ap >= 90 ? "#D97706" : "#DC2626";
+    const deltaStr = delta !== null ? (delta >= 0 ? `↑ +${delta}` : `↓ ${delta}`) : i === weeks.length - 1 ? "baseline" : "—";
+    const deltaColor = delta === null ? "#9CA3AF" : delta >= 0 ? "#059669" : "#DC2626";
+
+    const card = document.createElement("div");
+    card.className = "wk-card" + (i === activeIdx ? " active" : "") + (w.upcoming ? " upcoming" : "");
+    card.innerHTML = `
+      <div class="wc-week">${w.week}</div>
+      <div class="wc-date">${w.date}</div>
+      <div class="wc-rate" style="color:${apColor}">${w.upcoming ? "—" : w.ap + "%"}</div>
+      <div class="wc-delta" style="color:${deltaColor}">${deltaStr}</div>
+      <div class="wc-suite">AP pass rate</div>`;
+    if (!w.upcoming) card.onclick = () => { activeIdx = i; buildTimeline(); buildDetail(); };
+    tl.appendChild(card);
+  });
+}
+
+// ── Detail ───────────────────────────────────────────────────
+function barHTML(value, target, color) {
+  const pct = Math.min(value, 100);
+  const tPct = Math.min(target, 100);
+  const ok = value >= target;
+  return `
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${pct}%;background:${ok ? color : '#F87171'}"></div>
+      <div class="bar-marker" style="left:${tPct}%"></div>
+    </div>`;
+}
+
+function buildDetail() {
+  const w = weeks[activeIdx];
+  const dotColor = { done: "#059669", progress: "#D97706", blocked: "#DC2626" };
+  const apOk = w.ap >= targets.ap;
+  const raasOk = w.raas >= targets.raas;
+
+  const itemsHTML = (w.items || []).map(item => `
+    <div class="d-item">
+      <div class="d-dot" style="background:${dotColor[item.status] || '#6B7280'}"></div>
+      <span>${item.text}</span>
+    </div>`).join("");
+
+  const blockersHTML = (w.blockers || []).length > 0 ? `
+    <div class="detail-divider-sm"></div>
+    <div class="blockers-label">⚠️ Blockers</div>
+    ${w.blockers.map(b => `<div class="blocker-item"><span>•</span><span>${b}</span></div>`).join("")}` : "";
+
+  const nextHTML = (w.nextWeek || []).length > 0 ? `
+    <div class="detail-divider-sm"></div>
+    <div class="next-label">Next week</div>
+    ${w.nextWeek.map(n => `<div class="next-item"><div class="next-box"></div><span>${n}</span></div>`).join("")}` : "";
+
+  document.getElementById("detail").innerHTML = `
+    <div class="detail-head">
+      <div>
+        <div class="detail-week">${w.week} · ${w.date}${activeIdx === 0 ? " · current" : ""}</div>
+        <div class="detail-headline">${w.headline}</div>
+      </div>
+      <div class="detail-rates">
+        <div class="rate-pill">
+          <div class="rp-label">Admin Portal</div>
+          <div class="rp-val" style="color:${apOk ? '#059669' : '#DC2626'}">${w.ap}%<span class="rp-target">/ ${targets.ap}% target</span></div>
+          ${barHTML(w.ap, targets.ap, "#0891B2")}
+        </div>
+        <div class="rate-pill">
+          <div class="rp-label">RaaS</div>
+          <div class="rp-val" style="color:${raasOk ? '#059669' : '#DC2626'}">${w.raas}%<span class="rp-target">/ ${targets.raas}% target</span></div>
+          ${barHTML(w.raas, targets.raas, "#059669")}
+        </div>
+      </div>
+    </div>
+    <div class="detail-divider"></div>
+    <div class="detail-items-label">This week</div>
+    <div class="detail-items">${itemsHTML}</div>
+    ${blockersHTML}
+    ${nextHTML}`;
+}
+
+buildSummary();
+buildTimeline();
+buildDetail();
+</script>
+</body>
+</html>
