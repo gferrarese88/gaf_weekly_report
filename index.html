@@ -92,7 +92,28 @@ const REPORT = {
 
   weeks: [
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
-    // metrics: prsReviewed, prsCreated, testsConverted, adoUpdated
+    // metrics: prsReviewed, prsCreated, apiTestsFixed, testsConverted, adoUpdated
+    {
+      week: "Wk 32",
+      date: "Aug 4",
+      headline: "Major API test push — 17 tests fixed & 5+ UI tests converted to API",
+      metrics: { prsReviewed: 4, prsCreated: 2, testsConverted: 5, adoUpdated: 1, apiTestsFixed: 17 },
+      items: [
+        { text: "17 API tests uncommented and fixed — significant progress on LOB migration", status: "done" },
+        { text: "5+ UI tests converted to API tests — advancing test stability initiative", status: "done" },
+        { text: "4 PRs reviewed — active contribution to team code quality", status: "done" },
+        { text: "2 PRs created — continued development on fix/api-authentication-lob-tests", status: "done" },
+        { text: "1 ADO test case updated — source test case sync in progress", status: "done" },
+        { text: "Full ADO test case mapping (automated vs manual) — still in progress", status: "progress" },
+      ],
+      blockers: [],
+      nextWeek: [
+        "Continue converting UI tests to API tests",
+        "Complete ADO test case mapping (automated vs manual)",
+        "Keep updating ADO source test cases for converted tests",
+        "Continue LOB migration plan execution",
+      ],
+    },
     {
       week: "Wk 31",
       date: "Jul 28",
