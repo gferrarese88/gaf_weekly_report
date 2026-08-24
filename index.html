@@ -94,8 +94,31 @@ const REPORT = {
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
     // metrics: prsReviewed, prsCreated, apiTestsFixed, testsConverted, adoUpdated
     {
+      week: "Wk 34",
+      date: "Aug 18-22",
+      headline: "18 API tests fixed, 18 UI tests converted + 3 tickets closed including Rules Engine CRUD",
+      metrics: { prsReviewed: 1, prsCreated: 2, testsConverted: 18, adoUpdated: 5, apiTestsFixed: 18 },
+      items: [
+        { text: "18 API tests uncommented/fixed — biggest single-week output on LOB migration", status: "done" },
+        { text: "18 UI tests converted to API tests — major milestone on migration plan", status: "done" },
+        { text: "Closed ticket #203826 — Rules Engine 03: Implement rule set container CRUD (POST API call). Previously blocked on base URL, now resolved and completed", status: "done" },
+        { text: "Completed ticket #203827 — Rules Engine 04: Implement rule set version fork, list, and get", status: "done" },
+        { text: "Completed ticket #209214 — Segment Standardization Errors", status: "done" },
+        { text: "1 PR reviewed + 2 PRs created this week", status: "done" },
+        { text: "5+ ADO test cases updated", status: "done" },
+        { text: "Smoke testing Saturday night + exploratory testing Sunday — second consecutive weekend contributing to release quality", status: "done" },
+      ],
+      blockers: [],
+      nextWeek: [
+        "Continue LOB migration — UI to API test conversion",
+        "Complete ADO test case mapping (automated vs manual)",
+        "Continue updating ADO source test cases for converted tests",
+        "Investigate ticket #208260 — Admin Portal BFF returns 503 on GET /api/{tenantId}/Origami/{segmentId}/Domain in QA (quail). Same call succeeds in beta (koba) — environment-specific issue",
+      ],
+    },
+    {
       week: "Wk 33",
-      date: "Aug 11-17",
+      date: "Aug 11-15",
       headline: "Smoke & exploratory testing on weekend + deep account import investigation",
       metrics: { prsReviewed: 1, prsCreated: 0, testsConverted: 1, adoUpdated: 3, apiTestsFixed: 0 },
       items: [
@@ -128,7 +151,7 @@ const REPORT = {
     },
     {
       week: "Wk 32",
-      date: "Aug 4",
+      date: "Aug 4-8",
       headline: "Major API test push — 17 tests fixed & 5+ UI tests converted to API",
       metrics: { prsReviewed: 4, prsCreated: 2, testsConverted: 5, adoUpdated: 1, apiTestsFixed: 17 },
       items: [
@@ -149,7 +172,7 @@ const REPORT = {
     },
     {
       week: "Wk 31",
-      date: "Jul 28",
+      date: "Jul 28 - Aug 1",
       headline: "LOB migration plan presented & API authentication PR created",
       metrics: { prsReviewed: 3, prsCreated: 1, testsConverted: 0, adoUpdated: 0, apiTestsFixed: 5 },
       items: [
@@ -171,7 +194,7 @@ const REPORT = {
     // ── ADD MORE WEEKS ABOVE THIS LINE ───────────────────────
     {
       week: "Wk 30",
-      date: "Jul 21",
+      date: "Jul 21-25",
       headline: "Flaky tests identified — LOB migration proposal drafted",
       metrics: { prsReviewed: 1, prsCreated: 0, testsConverted: 0, adoUpdated: 3, apiTestsFixed: 0 },
       items: [
@@ -187,7 +210,7 @@ const REPORT = {
     },
     {
       week: "Wk 29",
-      date: "Jul 14",
+      date: "Jul 14-18",
       headline: "Full regression cycle — baseline established",
       metrics: { prsReviewed: 0, prsCreated: 0, testsConverted: 0, adoUpdated: 2, apiTestsFixed: 0 },
       items: [
@@ -253,7 +276,6 @@ function buildSummary() {
   const totalADO = dw.reduce((s,w) => s + (w.metrics.adoUpdated||0), 0);
   const openBlockers = (weeks[0].blockers||[]).length;
 
-  const totalAPIFixed = dw.reduce((s,w) => s + (w.metrics.apiTestsFixed||0), 0);
 
   document.getElementById("summary-row").innerHTML = `
     <div class="summary-card">
@@ -261,10 +283,6 @@ function buildSummary() {
       <div class="sc-val" style="color:#4F46E5">${(cur.prsReviewed||0) + (cur.prsCreated||0)}</div>
       <div class="sc-sub">${cur.prsReviewed||0} reviewed · ${cur.prsCreated||0} created</div>
     </div>
-    <div class="summary-card">
-      <div class="sc-label">API tests fixed</div>
-      <div class="sc-val" style="color:#0891B2">${cur.apiTestsFixed||0}</div>
-      <div class="sc-sub">${totalAPIFixed} total uncommented/fixed</div>
     </div>
     <div class="summary-card">
       <div class="sc-label">Tests converted</div>
@@ -349,7 +367,6 @@ function buildDetail() {
       <div class="detail-rates">
         ${metricChipHTML("PRs reviewed", m.prsReviewed||0, "#4F46E5", "code reviews")}
         ${metricChipHTML("PRs created", m.prsCreated||0, "#0891B2", "opened")}
-        ${metricChipHTML("API tests fixed", m.apiTestsFixed||0, "#0891B2", "uncommented/fixed")}
         ${metricChipHTML("Tests converted", m.testsConverted||0, "#059669", "UI→API")}
         ${metricChipHTML("ADO cases updated", m.adoUpdated||0, "#7C3AED", "test cases")}
       </div>
