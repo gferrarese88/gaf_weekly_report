@@ -94,6 +94,41 @@ const REPORT = {
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
     // metrics: prsReviewed, prsCreated, apiTestsFixed, testsConverted, adoUpdated
     {
+      week: "Wk 36",
+      date: "Sep 1-5",
+      headline: "3 PRs merged, 2 ADO test cases created, Rules Engine PBI 210017 driven to test-ready",
+      metrics: { prsReviewed: 1, prsCreated: 3, testsConverted: 15, adoUpdated: 3, apiTestsFixed: 0 },
+      items: [
+        { text: "PR #234 merged — Rules Engine: selected field IDs tests (PBI 210017). +166/-30 across 3 files, 10 checks passed. 2 ADO test cases (TC 210188, TC 210189) created and linked", status: "done" },
+        { text: "PR #224 merged (Sep 3) — Rating plans API operations suite: 15 UI-level cases migrated to API (CRUD, validation, metadata, multipart upload). Fixed raas-api-helper.ts URL-construction bug breaking every makeRequest() call", status: "done" },
+        { text: "PR #222 merged (Sep 3) — Bug #208260 domain-validation regression coverage + converted dead commented-out tests in origamiApi.spec.ts to test.fixme", status: "done" },
+        { text: "PR #223 reviewed & approved — Manuel's chore(ui-tests): Adjust workflow name grid selector, since merged", status: "done" },
+        { text: "PBI 210017 driven to test-ready — tagged qa-phase1-done, both TCs linked via Tested By into plan 202715 / suite 206905", status: "done" },
+        { text: "PR #225 hardened (5 commits) — fixed token-capture blocker failing every raas-qa API test at setup. Root causes: captureToken.setup.ts wrong navigation + AccountPage.accountHeader DOM mismatch after AP rebuild", status: "done" },
+        { text: "Killed the phantom 403 permissions blocker — documented root causes: schema drift on GET /lines-of-business, URL bug in raas-data.ts, missing auth on 4 helpers, S3 multipart status parsing", status: "done" },
+        { text: "Surfaced AP accounts deletion gap — accounts can be created via API but only deleted via DB. Raised with Manuel/Randy Sep 3 — Randy taking to #the-admins", status: "done" },
+        { text: "PR #231 approved, all checks green, ready to merge — 3 commits +158. Unblocked but button not pressed yet", status: "progress" },
+        { text: "PR #225 stuck in approve→rebase→dismiss loop — 3 approvals dismissed by merge-base changes. Open since Aug 31 (7 days)", status: "blocked" },
+        { text: "qa-mcp local setup — assigned by Randy Aug 31, soft Wednesday target missed. Still unconfirmed", status: "progress" },
+        { text: "Koba + Quail dual-testing mandate (Randy Sep 3) — every ticket must be tested in both before Done. Adds rework to in-flight tickets", status: "progress" },
+      ],
+      blockers: [
+        "PR #225 stale-review loop — 3 approvals dismissed by merge-base changes. Fix: stop rebasing after approval, merge in same window or enable auto-merge. Worth 13 retired tests + moves migration 13% → 20.6%.",
+        "PR #231 approved + green but unmerged — trivial fix, just needs the merge button pressed.",
+        "Environment instability — emergency AP deploy Sep 3, Koba 403s/outage Sep 2. Infra-owned.",
+        "AP accounts cannot be deleted via API — only via DB. Randy raising in #the-admins.",
+        "ADO reporter: suite 206905 not found — config mismatch between reporter and TC placement target.",
+      ],
+      nextWeek: [
+        "Merge PR #231 first — approved, green, unblocked",
+        "Break PR #225 approve-rebase loop — get approval and merge in same window",
+        "Close PBI 210017 — run Koba + Quail dual check then move to Done",
+        "Chase ADO suite 206905 mismatch — one config value, silently failing result publishing",
+        "Finish qa-mcp local setup",
+        "Investigate ticket #208260 — Admin Portal BFF 503 in quail, works in koba",
+      ],
+    },
+    {
       week: "Wk 34",
       date: "Aug 18-22",
       headline: "18 API tests fixed, 18 UI tests converted + 3 tickets closed including Rules Engine CRUD",
