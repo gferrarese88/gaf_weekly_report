@@ -110,6 +110,40 @@ const REPORT = {
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
     // metrics: prsReviewed, prsCreated, apiTestsFixed, testsConverted, adoUpdated
     {
+      week: "Wk 39",
+      date: "Sep 22-26",
+      headline: "214382 shipped in APSep26Rel — 2 defects found, 10 test cases promoted, release cut on 3.5-day week",
+      metrics: { prsReviewed: 1, prsCreated: 1, testsConverted: 0, adoUpdated: 2, apiTestsFixed: 0 },
+      items: [
+        { text: "Drove PBI 214382 (Remove Workflow from Trigger BFF) to release-ready in 3 days — 14/16 ACs signed off, testing report submitted Wed night, shipped in APSep26Rel", status: "done" },
+        { text: "Found 2 real product defects: AC10 silent 200 no-op on non-associated workflow (root-caused TMS membership logic) + unknown 500 on POST /api/Triggers with integrationId set", status: "done" },
+        { text: "Promoted 10 test cases Design → Ready in one batch pass (215389, 215390, 216501–216508) — all in snake_case naming convention", status: "done" },
+        { text: "PR #264 merged — test(204204): automate SSO IdP name sync test case. +152/-5, 10/10 checks", status: "done" },
+        { text: "PR #270 reviewed & approved — chore: lint (gaboma19)", status: "done" },
+        { text: "Carried APSep26Rel regression effort Tue–Wed alongside Manuel, Gabriel Ma and Daria — release shipped Thu Sep 24", status: "done" },
+        { text: "Proposed regression bug-tagging convention (APSep26Re-Bug) — Randy standardised on APReg, adopted by team", status: "done" },
+        { text: "Filed bug 218309 (Concierge publish DB errors) — re-validated Wed, passed, self-retired to Removed", status: "done" },
+        { text: "Data Mapper 04 (203843) advanced to In Test — handed to QA Fri Sep 25", status: "done" },
+        { text: "Cursor token increase (+$50) approved same-day after writing the justification himself", status: "done" },
+        { text: "Thu Sep 24 — Dominican Republic public holiday (zero activity, approved)", status: "done" },
+        { text: "PR #267 (remove-workflow automation +2,014 lines, 17 files) — parked by team decision. AC6 unprovable until roles/permissions UI exists. Randy + Mike Heskamp confirmed on PR", status: "blocked" },
+        { text: "qa-mcp local setup — 4 weeks open, still unstarted. Last obstacle removed Fri (Joe's config option)", status: "progress" },
+        { text: "UI-to-API migration — 0 tests retired (5th consecutive week). Committed to part-time restart in Wk 40", status: "progress" },
+      ],
+      blockers: [
+        "PR #267 parked — AC6 unprovable until roles/permissions UI exists. Team decision (Randy + Mike Heskamp). 2,014 lines accumulating merge conflicts — needs weekly rebase while parked.",
+        "qa-mcp setup — 4 weeks open. Joe's config fix removed the last obstacle Fri Sep 25.",
+        "AC10 defect (214382) root-caused but not filed as its own ticket — documented only in a closed PBI comment.",
+      ],
+      nextWeek: [
+        "Restart UI-to-API migration part-time — book the hours before the week fills (Gabriel's own commitment)",
+        "Finish qa-mcp setup — one hour, blocker removed",
+        "File AC10 as a standalone defect ticket before 214382 context is lost",
+        "Rebase PR #267 weekly while parked to avoid growing merge conflicts",
+        "Bring ticket-quality issue to retro with 2 concrete examples + proposed template field",
+      ],
+    },
+    {
       week: "Wk 36",
       date: "Sep 1-5",
       headline: "3 PRs merged, 2 ADO test cases created, Rules Engine PBI 210017 driven to test-ready",
@@ -309,7 +343,7 @@ const REPORT = {
 
 <!-- Migration Progress -->
 <div class="card" id="migration-wrap" style="margin-top:14px">
-  <div class="card-title">LOB Migration Progress — UI → API</div>
+  <div class="card-title">Rating TC Migration Progress — UI → API</div>
   <div id="migration-content"></div>
 </div>
 
@@ -326,11 +360,11 @@ document.getElementById("rpt-latest").textContent = weeks[0].date + " · " + wee
 
 // ── Migration Progress ───────────────────────────────────────
 const MIGRATION = {
-  total: 184,
+  total: 180,
   phases: [
-    { name: "Phase 1 — Foundation",       total: 53,  done: 53,  status: "done",    eta: "Complete"   },
-    { name: "Phase 2 — Mappings & Trans.", total: 60,  done: 12,  status: "stalled", eta: "Wk 38+"     },
-    { name: "Phase 3 — Excel & Advanced",  total: 71,  done: 0,   status: "planned", eta: "Nov 2026"   },
+    { name: "Phase 1 — Foundation",       total: 53,  done: 53,  status: "done",    eta: "Complete"      },
+    { name: "Phase 2 — Mappings & Trans.", total: 55,  done: 12,  status: "stalled", eta: "TBD — stalled 5 wks" },
+    { name: "Phase 3 — Excel & Advanced",  total: 72,  done: 0,   status: "planned", eta: "Nov–Dec 2026"  },
   ]
 };
 
