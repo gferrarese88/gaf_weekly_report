@@ -110,6 +110,63 @@ const REPORT = {
     // ── LATEST WEEK ALWAYS FIRST ──────────────────────────────
     // metrics: prsReviewed, prsCreated, apiTestsFixed, testsConverted, adoUpdated
     {
+      week: "Wk 42",
+      date: "Oct 13-17",
+      headline: "4 PRs merged + 2 open — heavy Data Mapper automation sprint",
+      metrics: { prsReviewed: 0, prsCreated: 6, testsConverted: 0, adoUpdated: 0, apiTestsFixed: 0 },
+      items: [
+        { text: "PR #318 merged — Data Mapper runtime /transform-staged API coverage (PBI 203849)", status: "done" },
+        { text: "PR #314 merged — Data Mapper runtime /transform API (PBI 203848)", status: "done" },
+        { text: "PR #307 merged — Data Mapper mapping version publish-history API (PBI 203846)", status: "done" },
+        { text: "PR #267 merged — remove-workflow-from-trigger API and UI cases (214382) — was parked since Sep 30, now finally landed", status: "done" },
+        { text: "PR #323 open — test(223716): automate Data Mapper runtime version pin resolution. Review required", status: "progress" },
+        { text: "PR #310 open — test(203847): automate data-mapper config version preview API. Changes requested", status: "blocked" },
+        { text: "PR #304 merged (Mon Oct 13) — test(203845): automate data-mapper version publish and slim put/patch", status: "done" },
+      ],
+      blockers: [
+        "PR #310 has changes requested — data-mapper config version preview API.",
+        "PR #323 awaiting review — Data Mapper runtime version pin resolution.",
+      ],
+      nextWeek: [
+        "Address changes requested on PR #310",
+        "Get PR #323 reviewed and merged",
+        "Continue Data Mapper automation series",
+        "Protect time for rating-plan TC conversions",
+      ],
+    },
+    {
+      week: "Wk 41",
+      date: "Oct 5-11",
+      headline: "Oct 8 release regression + Auth0 identity-linking bug found + 3 PRs merged",
+      metrics: { prsReviewed: 0, prsCreated: 3, testsConverted: 0, adoUpdated: 2, apiTestsFixed: 0 },
+      items: [
+        { text: "PR #298 merged — test(qa): automate The Square left nav rename (PBI 223003)", status: "done" },
+        { text: "PR #297 merged — feat(raas-qa): migrate priority rating-plan cases onto the API", status: "done" },
+        { text: "PR #295 merged — test(qa): add domain ID display coverage for PBI 219158", status: "done" },
+        { text: "Found and escalated Auth0 identity-linking bug (ADO 225528) — automation accounts getting linked to employee identities in lower envs, causing wrong-user logins. Proactively reported to #admin-portal-tiger-dev team", status: "done" },
+        { text: "Investigated ADO test-case plan/suite misplacement — TCs generated under wrong plan/suite IDs. Raised with Nathan Holland. Traced root cause to multi-project ADO access and wrong board context", status: "done" },
+        { text: "Concierge regression run with Randy (Oct 7) — all AP tickets tested and closed in Quail", status: "done" },
+        { text: "Actively improving TC quality — adding API call specifics and expected response body detail. Shared improvement examples in #admin-portal_raas-qa", status: "done" },
+        { text: "PR #267 (remove-workflow automation, 214382) — CI failing on CodeScene. Asked Manuel to merge. Not confirmed merged yet", status: "blocked" },
+        { text: "PR #297 (rating-migration) — awaiting merge, referenced in Oct 9 DM to Manuel", status: "progress" },
+        { text: "Migration — 0 conversions this week (6th consecutive week). 20/week goal still not re-baselined in writing", status: "progress" },
+        { text: "ADO product-project edit permissions — consolidated access request still unresolved", status: "blocked" },
+      ],
+      blockers: [
+        "Auth0 identity-linking (ADO 225528) — HIGH team-wide. Automation accounts linked to employee identities. Trigger path: incognito + normal mode sessions overlap. Root cause still open with tiger-dev.",
+        "PR #267 failing CodeScene CI — Gabriel to fix via follow-up PR. Asked Manuel to merge.",
+        "ADO TCs generated under wrong plan/suite IDs — manual relocation needed. Root cause unknown.",
+        "ADO product-project edit permissions — carried from Wk 40, unresolved.",
+      ],
+      nextWeek: [
+        "Get PR #267 green and merged — highest visible win",
+        "Track ADO 225528 Auth0 fix with tiger-dev team",
+        "Re-baseline migration goal in writing (20/week vs 180 candidates)",
+        "Protect a time block for rating-plan TC conversions — 6 weeks at zero",
+        "Resolve ADO plan/suite misplacement root cause with Nathan",
+      ],
+    },
+    {
       week: "Wk 39",
       date: "Sep 22-26",
       headline: "214382 shipped in APSep26Rel — 2 defects found, 10 test cases promoted, release cut on 3.5-day week",
